@@ -37,6 +37,7 @@ resource "aws_launch_configuration" "kk-lc" {
   image_id      = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
   key_name      = aws_key_pair.deployer.key_name
+  security_group     = [aws_security_group.instance-custum-sg.id]
 }
 
 resource "aws_autoscaling_group" "kk-auto" {
@@ -84,4 +85,109 @@ resource "aws_cloudwatch_metric_alarm" "custum-cpu-alarm" {
 
   alarm_description = "This metric monitors ec2 cpu utilization"
  # alarm_actions     = [aws_autoscaling_group.custum-cpu-alarm.arn]
+}
+
+
+
+#ELB
+
+# Create a new load balancer
+resource "aws_elb" "terra-lb" {
+  name               = "terraform-elb"
+  availability_zones = ["ap-south-1c", "ap-south-1a", "ap-south-1b"]
+  security_group     = [aws_security_group.elb-custum-sg.id]
+
+  listener {
+    instance_port     = 80
+    instance_protocol = "http"
+    lb_port           = 80
+    lb_protocol       = "http"
+  }
+
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+    target              = "HTTP:80/"
+    interval            = 30
+  }
+
+  cross_zone_load_balancing   = true
+  connection_draining         = true
+  connection_draining_timeout = 400
+
+  tags = {
+    Name = "terraform-elb"
+  }
+}
+
+#security group
+
+resource "aws_security_group" "elb-custum-sg" {
+  name = "elb-custum-sg"
+  description = "elb security group."
+  vpc_id = "vpc-04e91fc37dc01032e"
+}
+
+resource "aws_security_group_rule" "ssh_ingress_access" {
+  type = "ingress"
+  from_port = 22
+  to_port = 22
+  protocol = "tcp"
+  cidr_blocks = [ "0.0.0.0/0" ]
+  security_group_id = "${aws_security_group.elb-custum-sg.id}"
+}
+
+resource "aws_security_group_rule" "http_ingress_access" {
+  type = "ingress"
+  from_port = 80
+  to_port = 80
+  protocol = "tcp"
+  cidr_blocks = [ "0.0.0.0/0" ]
+  security_group_id = "${aws_security_group.elb-custum-sg.id}"
+}
+
+resource "aws_security_group_rule" "egress_access" {
+  type = "egress"
+  from_port = 0
+  to_port = 65535
+  protocol = "tcp"
+  cidr_blocks = [ "0.0.0.0/0" ]
+  security_group_id = "${aws_security_group.elb-custum-sg.id}"
+}
+
+#isntance-custum-sg
+
+resource "aws_security_group" "instance-custum-sg" {
+  name = "instance-custum-sg"
+  description = "elb security group."
+  vpc_id = "vpc-04e91fc37dc01032e"
+}
+
+resource "aws_security_group_rule" "ssh_ingress_access" {
+  type = "ingress"
+  from_port = 22
+  to_port = 22
+  protocol = "tcp"
+  cidr_blocks = [ "0.0.0.0/0" ]
+  security_group_id = "${aws_security_group.instance-custum-sg.id}"
+}
+
+resource "aws_security_group_rule" "http_ingress_access" {
+  type = "ingress"
+  from_port = 80
+  to_port = 80
+  protocol = "tcp"
+  cidr_blocks = [ "0.0.0.0/0" ]
+  security_group_id = "${aws_security_group.instance-custum-sg.id}"
+}
+
+resource "aws_security_group_rule" "egress_access" {
+  type = "egress"
+  from_port = 0
+  to_port = 65535
+  protocol = "tcp"
+  cidr_blocks = [ "0.0.0.0/0" ]
+  security_group_id = "${aws_security_group.instance-custum-sg.id}"
 }
