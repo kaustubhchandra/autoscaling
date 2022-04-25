@@ -83,5 +83,5 @@ resource "aws_cloudwatch_metric_alarm" "custum-cpu-alarm" {
   }
 
   alarm_description = "This metric monitors ec2 cpu utilization"
-  alarm_actions     = [aws_cloudwatch_metric_alarm.custum-cpu-alarm.arn]
+ # alarm_actions     = [aws_autoscaling_group.custum-cpu-alarm.arn]
 }
