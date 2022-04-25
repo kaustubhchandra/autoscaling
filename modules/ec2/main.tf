@@ -37,7 +37,7 @@ resource "aws_launch_configuration" "kk-lc" {
   image_id      = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
   key_name      = aws_key_pair.deployer.key_name
-  security_group     = [aws_security_group.instance-custum-sg.id]
+  security_groups     = [aws_security_group.instance-custum-sg.id]
 }
 
 resource "aws_autoscaling_group" "kk-auto" {
@@ -95,7 +95,7 @@ resource "aws_cloudwatch_metric_alarm" "custum-cpu-alarm" {
 resource "aws_elb" "terra-lb" {
   name               = "terraform-elb"
   availability_zones = ["ap-south-1c", "ap-south-1a", "ap-south-1b"]
-  security_group     = [aws_security_group.elb-custum-sg.id]
+  security_groups     = [aws_security_groups.elb-custum-sg.id]
 
   listener {
     instance_port     = 80
