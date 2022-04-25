@@ -130,7 +130,7 @@ resource "aws_security_group" "elb-custum-sg" {
   vpc_id = "vpc-04e91fc37dc01032e"
 }
 
-resource "aws_security_group_rule" "ssh_ingress_access" {
+resource "aws_security_group_rule" "ssh_ingress_access-2" {
   type = "ingress"
   from_port = 22
   to_port = 22
@@ -139,7 +139,7 @@ resource "aws_security_group_rule" "ssh_ingress_access" {
   security_group_id = "${aws_security_group.elb-custum-sg.id}"
 }
 
-resource "aws_security_group_rule" "http_ingress_access" {
+resource "aws_security_group_rule" "http_ingress_access-2" {
   type = "ingress"
   from_port = 80
   to_port = 80
@@ -148,7 +148,7 @@ resource "aws_security_group_rule" "http_ingress_access" {
   security_group_id = "${aws_security_group.elb-custum-sg.id}"
 }
 
-resource "aws_security_group_rule" "egress_access" {
+resource "aws_security_group_rule" "egress_access-2" {
   type = "egress"
   from_port = 0
   to_port = 65535
