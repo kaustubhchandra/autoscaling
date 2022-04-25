@@ -45,7 +45,7 @@ resource "aws_autoscaling_group" "kk-auto" {
   min_size                  = 1
   health_check_grace_period = 300
   health_check_type         = "EC2"
-  desired_capacity          = 4
+  desired_capacity          = 2
   force_delete              = true
   launch_configuration      = aws_launch_configuration.kk-lc.name
   vpc_zone_identifier       = ["subnet-0e4e67a0dfef65dd4", "subnet-0c37f0dbfffa82e49"]
