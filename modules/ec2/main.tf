@@ -48,11 +48,21 @@ resource "aws_autoscaling_group" "kk-auto" {
   desired_capacity          = 2
   force_delete              = true
   launch_configuration      = aws_launch_configuration.kk-lc.name
-  vpc_zone_identifier       = ["subnet-0e4e67a0dfef65dd4", "subnet-0c37f0dbfffa82e49"]
+  vpc_zone_identifier       = ["subnet-0e4e67a0dfef65dd4", "subnet-0c37f0dbfffa82e49", "subnet-0f9846331bd6a11a0"]
   tag {
     key = "Name"
     value = "kk-project"
     propagate_at_launch = true
   }
+  
+}
+
+resource "aws_autoscaling_policy" "custum-cpu-policy" {
+  name                   = "custum-cpu-policy"
+  scaling_adjustment     = 1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 300
+  autoscaling_group_name = aws_autoscaling_group.kk-auto.name
+  policy_type            = "SimpleScaling"
   
 }
