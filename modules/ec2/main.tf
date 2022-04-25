@@ -6,7 +6,7 @@ data "aws_ami" "ubuntu" {
   owners           = ["857848422201"]
   filter {
     name   = "name"
-    values = ["test-terra-2"]
+    values = ["test-terra-3"]
   }
 }
 
