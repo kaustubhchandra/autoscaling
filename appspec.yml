@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: /WordPress
+  - source: WordPress
     destination: /var/www/html/WordPress
 hooks:
   BeforeInstall:
